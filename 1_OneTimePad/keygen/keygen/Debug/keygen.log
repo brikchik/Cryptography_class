@@ -1,0 +1,7 @@
+﻿  stdafx.cpp
+  keygen.cpp
+c:\users\глеб\documents\visual studio 2015\projects\keygen\keygen\keygen.cpp(16): warning C4018: <: несоответствие типов со знаком и без знака
+c:\users\глеб\documents\visual studio 2015\projects\keygen\keygen\keygen.cpp(29): warning C4244: инициализация: преобразование "std::streamoff" в "int", возможна потеря данных
+  Создание кода...
+  keygen.vcxproj -> c:\Users\Глеб\Documents\Visual Studio 2015\Projects\keygen\Debug\keygen.exe
+  keygen.vcxproj -> c:\Users\Глеб\Documents\Visual Studio 2015\Projects\keygen\Debug\keygen.pdb (Full PDB)
