@@ -1,9 +1,0 @@
-﻿  keygen.cpp
-keygen.cpp(13): warning C4018: <: несоответствие типов со знаком и без знака
-keygen.cpp(26): warning C4244: инициализация: преобразование "std::streamoff" в "int", возможна потеря данных
-  stdafx.cpp
-  Создание кода
-  All 261 functions were compiled because no usable IPDB/IOBJ from previous compilation was found.
-  Создание кода завершено
-  keygen.vcxproj -> C:\Users\Глеб\Documents\Visual Studio 2015\Projects\keygen\Release\keygen.exe
-  keygen.vcxproj -> C:\Users\Глеб\Documents\Visual Studio 2015\Projects\keygen\Release\keygen.pdb (Full PDB)
