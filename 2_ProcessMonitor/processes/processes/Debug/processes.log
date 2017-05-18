@@ -1,0 +1,4 @@
+﻿  processes.cpp
+c:\users\глеб\documents\visual studio 2015\projects\processes\processes\processes.cpp(14): warning C4101: Process: неиспользованная локальная переменная
+  processes.vcxproj -> c:\users\глеб\documents\visual studio 2015\Projects\processes\Debug\processes.exe
+  processes.vcxproj -> c:\users\глеб\documents\visual studio 2015\Projects\processes\Debug\processes.pdb (Full PDB)
