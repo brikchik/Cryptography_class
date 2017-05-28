@@ -56,8 +56,8 @@ int main(int argc, char** args)
 {
     des cipher("ecb");
     cipher.gen_key();
-    if(!cipher.encode("Физическийqwerty"))return -1;
-    cipher.decode(strlen("Физическийqwerty"));
+    if(!cipher.encode("Физичес1"))return -1;
+    cipher.decode(strlen("dfghrehf"));
     system("pause");
     return(0);
 }

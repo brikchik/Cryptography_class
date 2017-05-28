@@ -23,13 +23,8 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <Library Include="..\..\..\..\..\..\..\Temp\openssl\lib\libeay32.lib">
+    <Library Include="..\..\..\..\..\..\..\Program Files (x86)\Microsoft Visual Studio 14.0\VC\lib\libeay32.lib">
       <Filter>Файлы ресурсов</Filter>
     </Library>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="..\library\libeay32.dll">
-      <Filter>Файлы ресурсов</Filter>
-    </None>
   </ItemGroup>
 </Project>
