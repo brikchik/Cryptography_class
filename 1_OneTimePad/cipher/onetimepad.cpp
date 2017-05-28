@@ -1,4 +1,3 @@
-#include "stdafx.h"
 #include "iostream"
 #include <vector>
 #include <fstream>
@@ -104,7 +103,6 @@ public:
 			cout << "Different key-plaintext length";
 			char* errstr = "";
 			cin >> errstr;
-			cout << errstr;
 			return false;
 		}
 		for (int i = 0; i < _input.GetData().size(); i++)
