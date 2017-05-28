@@ -1,5 +1,4 @@
 #include "onetimepad.cpp"
-#include "stdafx.h"
 #include "iostream"
 #include <vector>
 #include <fstream>
