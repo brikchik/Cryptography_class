@@ -20,7 +20,7 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <Library Include="..\..\..\..\..\..\..\Temp\openssl\lib\libeay32.lib">
+    <Library Include="..\libs\libcrypto32MT.lib">
       <Filter>Файлы ресурсов</Filter>
     </Library>
   </ItemGroup>

@@ -38,11 +38,10 @@ public:
             {
                 byte = (_byte)(_file.get());
                 _data.push_back(byte);
-                // write data to vector
             }
         }
         else {
-            cout << "Empty file"; //if file is not empty
+            cout << "Empty file";     
             _file.close();
         }
         return !_data.empty();

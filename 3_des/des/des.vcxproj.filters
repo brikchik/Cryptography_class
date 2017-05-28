@@ -23,7 +23,7 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <Library Include="..\..\..\..\..\..\..\Program Files (x86)\Microsoft Visual Studio 14.0\VC\lib\libeay32.lib">
+    <Library Include="..\libcrypto.lib">
       <Filter>Файлы ресурсов</Filter>
     </Library>
   </ItemGroup>
