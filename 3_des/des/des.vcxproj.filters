@@ -26,8 +26,10 @@
     <Library Include="..\..\..\..\..\..\..\Temp\openssl\lib\libeay32.lib">
       <Filter>Файлы ресурсов</Filter>
     </Library>
-    <Library Include="..\..\..\..\..\..\..\Temp\openssl\lib\ssleay32.lib">
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\library\libeay32.dll">
       <Filter>Файлы ресурсов</Filter>
-    </Library>
+    </None>
   </ItemGroup>
 </Project>
