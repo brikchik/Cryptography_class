@@ -1,8 +1,0 @@
-﻿  processes.cpp
-processes.cpp(14): warning C4101: Process: неиспользованная локальная переменная
-  stdafx.cpp
-  Создание кода
-  All 12 functions were compiled because no usable IPDB/IOBJ from previous compilation was found.
-  Создание кода завершено
-  processes.vcxproj -> c:\users\глеб\documents\visual studio 2015\Projects\processes\Release\processes.exe
-  processes.vcxproj -> c:\users\глеб\documents\visual studio 2015\Projects\processes\Release\processes.pdb (Full PDB)
