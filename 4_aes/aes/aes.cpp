@@ -1,10 +1,10 @@
 #include <stdio.h> 
 #include <iostream>
 #include <openssl/aes.h>
+#include <openssl/evp.h>
 #include <vector>
 #include <fstream>
 #include <string>
-//#include <openssl/rand.h>
 #include <Windows.h>
 class Foper
 {
@@ -56,22 +56,40 @@ public:
 };
 class aes_class
 {
+private:
+    unsigned char input[16];
+    unsigned char enc_out[16];
+    AES_KEY enc_key;
+    Foper inputfile;
+    Foper destfile;
+    std::vector<unsigned char> text;
+    int paddingNumber;
 public:
     aes_class() {}
+    std::vector<unsigned char> keystore;
     unsigned char key[16] = { 0x00, 0x11, 0x22, 0x33, 0x44, 0x55, 0x66, 0x77, 0x88, 0x99, 0xaa, 0xbb, 0xcc, 0xdd, 0xee, 0xff };
+    bool gen_key(int length)
+    {
+        if (length < 16 || length>256 || length % 32 != 0)return false;
+        keystore.clear();
+        for (int i = 0; i < length; i++)
+        {
+            keystore.push_back(rand() % 255);
+            key[i] = keystore.at(i);
+        }
+        std::cout << "[" << key << "] ";
+        return true;
+    }
     bool set_key(unsigned char new_key[])
     {
         if (strlen((char*)new_key + '\0') < 16)return false;
         for (int i = 0; i < 16; i++)key[i] = new_key[i];
         return true;
     };
-    bool ecb_encrypt(std::string path, std::string dest) {
-        Foper inputfile;
-        Foper destfile;
+    bool encrypt(std::string path, std::string dest) {
         if (!inputfile.open(path))return false;
-        std::vector<unsigned char> text = inputfile.GetData();
-
-        int paddingNumber = 0; //PKCS#7 padding
+        text = inputfile.GetData();
+        paddingNumber = 0; //PKCS#7 padding
         while (((text.size() + paddingNumber) % 16) != 0)
         {
             paddingNumber++;
@@ -80,10 +98,7 @@ public:
         {
             text.push_back(paddingNumber);
         }
-        unsigned char input[16];
-        unsigned char enc_out[16];
         std::vector<unsigned char> result;
-        AES_KEY enc_key;
         int length = text.size() - 1;
         int pos = 0;
         AES_set_encrypt_key(key, 128, &enc_key);
@@ -102,13 +117,11 @@ public:
         if (!destfile.write(dest))return false;
         return true;
     }
-    bool ecb_decrypt(std::string path, std::string dest) {
+    bool decrypt(std::string path, std::string dest) {
         Foper inputfile;
         Foper destfile;
         if (!inputfile.open(path))return false;
-        std::vector<unsigned char> text = inputfile.GetData();
-        unsigned char input[16];
-        unsigned char enc_out[16];
+        text = inputfile.GetData();
         std::vector<unsigned char> result;
         AES_KEY dec_key;
         int length = text.size() - 1;
@@ -125,7 +138,7 @@ public:
             }
         }
         //PKCS#7 padding
-        int paddingNumber = result.back();
+        paddingNumber = result.back();
         if (result.at(result.size() - paddingNumber) == paddingNumber)
             result._Pop_back_n(paddingNumber);
 
@@ -137,7 +150,8 @@ public:
 int main()
 {
     aes_class aes;
-    std::cout << "Input command (set_key/ecb_ecn/ecb_dec/etc.): " << std::endl;
+    system("cls");
+    std::cout << "Input command (gen_key/set_key/enc/dec): " << std::endl;
     std::string mode = "";
     std::cin >> mode;
     std::cout << "Mode: " << mode << std::endl;
@@ -150,159 +164,37 @@ int main()
         std::cin >> mode;
         std::cout << "Mode: " << mode << std::endl;
     }
+    else
+        if (mode == "gen_key" || mode == "create_key")
+        {
+            std::cout << "Input key length: ";
+            int length;
+            std::cin >> length;
+            aes.gen_key(length);
+            if (mode == "create_key")
+            {
+                Foper keyfile;
+                keyfile.GetData() = aes.keystore;
+                keyfile.write(std::string("key.txt"));
+            }
+            std::cout << "Key set.\nInput mode: ";
+            std::cin >> mode;
+            std::cout << "Mode: " << mode << std::endl;
+        }
     std::string source = "";
+    std::cout << "Source: ";
     std::cin >> source;
-    std::cout << "Source: " << source << std::endl;
+    std::cout << std::endl;
     std::string dest = "";
+    std::cout << "Destination: ";
     std::cin >> dest;
-    std::cout << "Destination: " << dest << std::endl;
-    if (mode == "ecb_enc") {
-        aes.ecb_encrypt(source, dest);
+    std::cout << std::endl;
+    if (mode == "enc") {
+        aes.encrypt(source, dest);
     }
-    if (mode == "ecb_dec") {
-        aes.ecb_decrypt(source, dest);
+    if (mode == "dec") {
+        aes.decrypt(source, dest);
     }
     system("pause");
     return 0;
 }
-//
-//#include <openssl/conf.h>
-//#include <openssl/evp.h>
-//#include <openssl/err.h>
-//void handleErrors(void)
-//{
-//    ERR_print_errors_fp(stderr);
-//    abort();
-//}
-//int encrypt(unsigned char *plaintext, int plaintext_len, unsigned char *key,
-//    unsigned char *iv, unsigned char *ciphertext)
-//{
-//    EVP_CIPHER_CTX *ctx;
-//
-//    int len;
-//
-//    int ciphertext_len;
-//
-//    /* Create and initialise the context */
-//    if (!(ctx = EVP_CIPHER_CTX_new())) handleErrors();
-//
-//    /* Initialise the encryption operation. IMPORTANT - ensure you use a key
-//    * and IV size appropriate for your cipher
-//    * In this example we are using 256 bit AES (i.e. a 256 bit key). The
-//    * IV size for *most* modes is the same as the block size. For AES this
-//    * is 128 bits */
-//    if (1 != EVP_EncryptInit_ex(ctx, EVP_aes_256_cbc(), NULL, key, iv))
-//        handleErrors();
-//
-//    /* Provide the message to be encrypted, and obtain the encrypted output.
-//    * EVP_EncryptUpdate can be called multiple times if necessary
-//    */
-//    if (1 != EVP_EncryptUpdate(ctx, ciphertext, &len, plaintext, plaintext_len))
-//        handleErrors();
-//    ciphertext_len = len;
-//
-//    /* Finalise the encryption. Further ciphertext bytes may be written at
-//    * this stage.
-//    */
-//    if (1 != EVP_EncryptFinal_ex(ctx, ciphertext + len, &len)) handleErrors();
-//    ciphertext_len += len;
-//
-//    /* Clean up */
-//    EVP_CIPHER_CTX_free(ctx);
-//
-//    return ciphertext_len;
-//}
-//int decrypt(unsigned char *ciphertext, int ciphertext_len, unsigned char *key,
-//    unsigned char *iv, unsigned char *plaintext)
-//{
-//    EVP_CIPHER_CTX *ctx;
-//
-//    int len;
-//
-//    int plaintext_len;
-//
-//    /* Create and initialise the context */
-//    if (!(ctx = EVP_CIPHER_CTX_new())) handleErrors();
-//
-//    /* Initialise the decryption operation. IMPORTANT - ensure you use a key
-//    * and IV size appropriate for your cipher
-//    * In this example we are using 256 bit AES (i.e. a 256 bit key). The
-//    * IV size for *most* modes is the same as the block size. For AES this
-//    * is 128 bits */
-//    if (1 != EVP_DecryptInit_ex(ctx, EVP_aes_256_cbc(), NULL, key, iv))
-//        handleErrors();
-//
-//    /* Provide the message to be decrypted, and obtain the plaintext output.
-//    * EVP_DecryptUpdate can be called multiple times if necessary
-//    */
-//    if (1 != EVP_DecryptUpdate(ctx, plaintext, &len, ciphertext, ciphertext_len))
-//        handleErrors();
-//    plaintext_len = len;
-//
-//    /* Finalise the decryption. Further plaintext bytes may be written at
-//    * this stage.
-//    */
-//    if (1 != EVP_DecryptFinal_ex(ctx, plaintext + len, &len)) handleErrors();
-//    plaintext_len += len;
-//
-//    /* Clean up */
-//    EVP_CIPHER_CTX_free(ctx);
-//
-//    return plaintext_len;
-//}
-//int main(void)
-//{
-//    /* Set up the key and iv. Do I need to say to not hard code these in a
-//    * real application? :-)
-//    */
-//
-//    /* A 256 bit key */
-//    unsigned char *key = (unsigned char *)"01234567890123456789012345678901";
-//
-//    /* A 128 bit IV */
-//    unsigned char *iv = (unsigned char *)"0123456789012345";
-//
-//    /* Message to be encrypted */
-//    unsigned char *plaintext =
-//        (unsigned char *)"The quick brown fox jumps over the lazy dog";
-//
-//    /* Buffer for ciphertext. Ensure the buffer is long enough for the
-//    * ciphertext which may be longer than the plaintext, dependant on the
-//    * algorithm and mode
-//    */
-//    unsigned char ciphertext[128];
-//
-//    /* Buffer for the decrypted text */
-//    unsigned char decryptedtext[128];
-//
-//    int decryptedtext_len, ciphertext_len;
-//
-//    /* Initialise the library */
-//    ERR_load_crypto_strings();
-//    OpenSSL_add_all_algorithms();
-//    OPENSSL_config(NULL);
-//
-//    /* Encrypt the plaintext */
-//    ciphertext_len = encrypt(plaintext, strlen((char *)plaintext), key, iv,
-//        ciphertext);
-//
-//    /* Do something useful with the ciphertext here */
-//    printf("Ciphertext is:\n");
-//    BIO_dump_fp(stdout, (const char *)ciphertext, ciphertext_len);
-//
-//    /* Decrypt the ciphertext */
-//    decryptedtext_len = decrypt(ciphertext, ciphertext_len, key, iv,
-//        decryptedtext);
-//    /* Add a NULL terminator. We are expecting printable text */
-//    decryptedtext[decryptedtext_len] = '\0';
-//    /* Show the decrypted text */
-//    printf("Decrypted text is:\n");
-//    printf("%s\n", decryptedtext);
-//    /* Clean up */
-//    EVP_cleanup();
-//    ERR_free_strings();
-//
-//    return 0;
-//    system("pause");
-//}
-//
