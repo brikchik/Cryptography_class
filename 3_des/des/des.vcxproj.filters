@@ -23,7 +23,7 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <Library Include="..\libcrypto.lib">
+    <Library Include="..\libs\libcrypto32MT.lib">
       <Filter>Файлы ресурсов</Filter>
     </Library>
   </ItemGroup>

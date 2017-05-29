@@ -80,7 +80,6 @@ public:
         {
             text.push_back(paddingNumber);
         }
-        std::cout << paddingNumber;
         unsigned char input[16];
         unsigned char enc_out[16];
         std::vector<unsigned char> result;
@@ -127,7 +126,7 @@ public:
         }
         //PKCS#7 padding
         int paddingNumber = result.back();
-        if (result.at(result.size() - paddingNumber-1) == paddingNumber)
+        if (result.at(result.size() - paddingNumber) == paddingNumber)
             result._Pop_back_n(paddingNumber);
 
         destfile.GetData() = result;
