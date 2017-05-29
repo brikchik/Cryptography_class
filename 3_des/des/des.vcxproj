@@ -160,6 +160,9 @@
   <ItemGroup>
     <Library Include="..\libs\libcrypto32MT.lib" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="..\Release\input.docx" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
     <Import Project="..\..\..\..\..\..\глеб\documents\visual studio 2015\Projects\des\packages\openssl.redist.1.0.1.25\build\native\openssl.redist.targets" Condition="Exists('..\..\..\..\..\..\глеб\documents\visual studio 2015\Projects\des\packages\openssl.redist.1.0.1.25\build\native\openssl.redist.targets')" />

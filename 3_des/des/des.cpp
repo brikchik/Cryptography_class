@@ -6,6 +6,8 @@
 #include <string>
 //#include <openssl/rand.h>
 #include <Windows.h>
+#define cout std::cout
+#define cin std::cin
 class Foper
 {
 private:
@@ -19,14 +21,12 @@ public:
         std::ifstream _file(name, std::ios::in | std::ios::binary);
         if (!_file.is_open())
         {
-            std::cout << "No such file: " << name << std::endl;
+            cout << "No such file: " << name << std::endl;
             return false;
         }
-
         _file.seekg(0, std::ios::end);
         int size = _file.tellg();
         _file.seekg(0, std::ios::beg);
-
         if (size != 0) {
             unsigned char byte;
             for (int i = 0; i < size; i++)
@@ -35,8 +35,9 @@ public:
                 _data.push_back(byte);
             }
         }
-        else {
-            std::cout << "Empty file";
+        else
+        {
+            cout << "Empty file";
             _file.close();
         }
         return !_data.empty();
@@ -45,7 +46,7 @@ public:
     bool write(std::string &output)
     {
         std::ofstream outfile(output, std::fstream::out | std::fstream::trunc | std::fstream::binary);
-        if (!outfile.is_open()) { std::cout << "Unable to open file for writing"; return false; };
+        if (!outfile.is_open()) { cout << "Unable to open file for writing"; return false; };
         for (int i = 0; i < _data.size(); i++)
         {
             outfile.put((unsigned char)_data.at(i));
@@ -57,22 +58,40 @@ public:
 class des_class {
 private:
     unsigned char input[8], output[8];
-    DES_cblock key;
     DES_key_schedule keysched;
+    Foper inputfile;
+    Foper destfile;
+    int paddingNumber;
+    std::vector<unsigned char> text;
 public:
     des_class() {}
+    bool set_key(unsigned char *new_key)
+    {
+        if (strlen((char*)new_key + '\0') != 9)return false;
+        DES_set_key((DES_cblock *)new_key, &keysched);
+        return true;
+    }
     void gen_key() {
+        DES_cblock key;
         DES_random_key(&key);
-        std::cout << key;
+        if(set_key(key))cout << key + '\0';
         DES_set_key((DES_cblock *)key, &keysched);
     }
+    void create_key()
+    {
+        DES_cblock key;
+        DES_random_key(&key);
+        Foper keyFile;
+        for (int i = 0; i < 8; i++)keyFile.GetData().push_back(key[i]);
+        keyFile.write(std::string("key.txt"));
+        set_key(key);
+        cout <<'[ '<< key+'\0'<<' ]';
+    }
     bool ecb_encode(std::string path, std::string dest) {
-        Foper inputfile;
-        Foper destfile;
         if (!inputfile.open(path))return false;
-        std::vector<unsigned char> text = inputfile.GetData();
+        text = inputfile.GetData();
         if (text.empty())return false;
-        int paddingNumber = 0; //PKCS#7 padding
+        paddingNumber = 0; //PKCS#7 padding
         while (((text.size() + paddingNumber) % 8) != 0)
         {
             paddingNumber++;
@@ -81,12 +100,10 @@ public:
         {
             text.push_back(paddingNumber);
         }
-
         std::vector<unsigned char> result;
         int length = text.size() - 1;
         int pos = 0;
         for (int i = 0; i < length; i += 8) {
-
             for (int j = 0; j < 8; j++) {
                 input[j] = text[i + j];
             }
@@ -98,19 +115,17 @@ public:
         }
         destfile.GetData() = result;
         if (!destfile.write(dest))return false;
+        text.clear();
         return true;
     }
     bool ecb_decode(std::string path, std::string dest) {
-        Foper inputfile;
-        Foper destfile;
         if (!inputfile.open(path))return false;
-        std::vector<unsigned char> text = inputfile.GetData();
+        text = inputfile.GetData();
         if (text.empty())return false;
         std::vector<unsigned char> result;
         int length = text.size() - 1;
         int pos = 0;
         for (int i = 0; i < length; i += 8) {
-
             for (int j = 0; j < 8; j++) {
                 input[j] = text[i + j];
             }
@@ -120,50 +135,118 @@ public:
                 pos++;
             }
         }
-        //PKCS#7 padding
-        int paddingNumber = result.back();
-        if (result.at(result.size() - paddingNumber) == paddingNumber)
-            result._Pop_back_n(paddingNumber);
-
+        paddingNumber = result.back();//PKCS#7 padding
+        if (paddingNumber < length) { //for very small (X<16b) messages
+            if (result.at(result.size() - paddingNumber) == paddingNumber)
+                result._Pop_back_n(paddingNumber);
+        }
+        destfile.GetData() = result;
+        if (!destfile.write(dest))return false;
+        text.clear();
+        return true;
+    }
+    /*bool cbc_decode(std::string path, std::string dest) {
+        if (!inputfile.open(path))return false;
+        text = inputfile.GetData();
+        if (text.empty())return false;
+        std::vector<unsigned char> result;
+        int length = text.size() - 1;
+        int pos = length - 8;
+        unsigned char* ivec;;
+        for (int i = length - 8; i > 0; i -= 8) {
+            for (int j = 0; j < 8; j++) {
+                if (i == 0)ivec = (unsigned char*)"helloe"; else
+                    ivec[j] = text[i - 8 + j];
+                input[j] = text[i + j];
+            }
+            DES_cbc_encrypt(input, output, 8, &keysched, (DES_cblock*)ivec, DES_DECRYPT);
+            for (int j = 0; j < 8; j++) {
+                result.push_back(output[j]);
+                pos++;
+            }
+            pos -= 16;
+            if (pos < 0)pos = 0;
+        }
         destfile.GetData() = result;
         if (!destfile.write(dest))return false;
         return true;
-    }
-    bool set_key(unsigned char new_key[])
-    {
-        if (strlen((char*)new_key + '\0') != 8)return false;
-        DES_set_key((DES_cblock *)new_key, &keysched);
-        return true;
-    }
+    }*/
+    //bool cbc_encode(std::string path, std::string dest) {
+    //    if (!inputfile.open(path))return false;
+    //    text = inputfile.GetData();
+    //    if (text.empty())return false;
+    //    paddingNumber = 0; //PKCS#7 padding
+    //    while (((text.size() + paddingNumber) % 8) != 0)paddingNumber++;
+    //    for (int i = 0; i < paddingNumber; i++)text.push_back(paddingNumber);
+    //    std::vector<unsigned char> result;
+    //    int length = text.size() - 1;
+    //    int pos = 0;
+    //    unsigned char* ivec = (unsigned char*)"vectorke";
+    //        for (int i = 0; i < length; i += 8) {
+    //            for (int j = 0; j < 8; j++) {
+    //                input[j] = text[i + j];
+    //            }
+    //            //DES_cbc_encrypt(input, output,8, &keysched, (DES_cblock*)ivec,DES_ENCRYPT);
+    //            ivec = output;
+    //            for (int j = 0; j < 8; j++) {
+    //                result.push_back(output[j]);
+    //                pos++;
+    //            }
+    //        }
+    //    destfile.GetData() = result;
+    //    if (!destfile.write(dest))return false;
+    //    return true;
+    //}
 };
 
 int main()
 {
     des_class des;
-    std::cout << "Input command (set_key/ecb_ecn/ecb_dec/etc.): " << std::endl;
+    system("cls");
+    cout << "Input command (gen_key/set_key/create_key/ecb_enc/ecb_dec): " << std::endl;
     std::string mode = "";
-    std::cin >> mode;
-    std::cout << "Mode: " << mode << std::endl;
+    cin >> mode;
+    cout << "Mode: " << mode << std::endl;
     if (mode == "set_key")
     {
         char key_arr[32];
-        std::cin >> key_arr;
+        cin >> key_arr;
         if (!des.set_key((unsigned char*)key_arr))return -2;
-        std::cout << "Key set.\nInput mode: ";
-        std::cin >> mode;
-        std::cout << "Mode: " << mode << std::endl;
+        cout << "Key set.\nInput mode: ";
+        cin >> mode;
+        cout << "Mode: " << mode << std::endl;
     }
+    else
+        if (mode == "gen_key" || mode=="create_key")
+        {
+            des.gen_key();
+            if (mode == "create_key")des.create_key();
+            cout << "Key set.\nInput mode: ";
+            cin >> mode;
+            cout << "Mode: " << mode << std::endl;
+        }
     std::string source = "";
-    std::cin >> source;
-    std::cout << "Source: " << source << std::endl;
+    cout << "Source: ";
+    cin >> source;
+    cout << std::endl;
     std::string dest = "";
-    std::cin >> dest;
-    std::cout << "Destination: " << dest << std::endl;
+    cout << "Destination: ";
+    cin >> dest;
+    cout << std::endl;
     if (mode == "ecb_enc") {
         des.ecb_encode(source, dest);
     }
+    else
     if (mode == "ecb_dec") {
         des.ecb_decode(source, dest);
+    }
+    else
+    if (mode == "cbc_enc") {
+        //des.cbc_encode(source, dest);
+    }
+    else
+    if (mode == "ecb_dec") {
+        //des.ecb_decode(source, dest);
     }
     system("pause");
     return 0;
