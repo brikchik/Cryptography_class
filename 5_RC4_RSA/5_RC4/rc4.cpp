@@ -1,4 +1,4 @@
-#include "../../Foper.cpp"
+#include "imports.h"
 class rc4 {
 private:
     const int blockLength = 8; //1byte block

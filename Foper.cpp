@@ -11,9 +11,6 @@ class Foper
 private:
     vector<_byte> _data;
 public:
-    Foper()
-    {
-    }
     bool open(string &name)
     {
         ifstream _file(name, std::ios::in | std::ios::binary);
