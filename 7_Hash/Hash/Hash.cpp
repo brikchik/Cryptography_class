@@ -24,11 +24,9 @@ vector funcIt(vector iv,vector block)//transforms blockLength bytes into blockLe
 vector Hash(vector file,bool useMD5) {
     vector result;
     vector iv = { 'a','m','c','d','e','f','a','b','l','d','e','f','a','b','c','d','k','f','a','n','c','d','e','f' };
-    //24byte hash value. iv is defined in standard
     int size = file.size();
     int maxSize = size;
     while (maxSize % blockLength != 0)maxSize++;
-    //240byte source block
     vector block;
     if (useMD5)
     {
