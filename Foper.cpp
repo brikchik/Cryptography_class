@@ -4,12 +4,11 @@
 #include <string>
 #define _byte unsigned char
 #define string std::string
-#define vector std::vector
 #define ifstream std::ifstream
 class Foper
 {
 private:
-    vector<_byte> _data;
+    std::vector<unsigned char> _data;
 public:
     bool open(string &name)
     {
@@ -38,7 +37,7 @@ public:
         }
         return !_data.empty();
     }
-    vector<_byte> &GetData() { return _data; }
+    std::vector<unsigned char> &GetData() { return _data; }
     bool write(string &output)
     {
         std::ofstream outfile(output, std::fstream::out | std::fstream::trunc | std::fstream::binary);

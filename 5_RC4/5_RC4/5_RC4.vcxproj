@@ -144,15 +144,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <Text Include="ReadMe.txt" />
-  </ItemGroup>
-  <ItemGroup>
     <ClCompile Include="5_RC4.cpp" />
     <ClCompile Include="rc4.cpp" />
-    <ClCompile Include="rsa.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <Library Include="..\..\components_of_openssl_lib\libcrypto32MT.lib" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="imports.h" />
