@@ -1,4 +1,5 @@
 #include "iostream"
+#include "../../Foper.cpp"
 #include <vector>
 #include <fstream>
 #include <locale>
@@ -11,54 +12,6 @@
 #define cout std::cout
 #define endl std::endl
 #define cin std::cin
-class Foper
-{
-private:
-    vector<_byte> _data;
-public:
-    Foper()
-    {
-    }
-    bool open(string &name)
-    {
-        ifstream _file(name, std::ios::in | std::ios::binary);
-        if (!_file.is_open())
-        {
-            cout << "No such file: " << name << endl;
-            return false;
-        }
-
-        _file.seekg(0, std::ios::end);
-        int size = _file.tellg();
-        _file.seekg(0, std::ios::beg);
-
-        if (size != 0) {
-            _byte byte;
-            for (int i = 0; i < size; i++)
-            {
-                byte = (_byte)(_file.get());
-                _data.push_back(byte);
-            }
-        }
-        else {
-            cout << "Empty file";     
-            _file.close();
-        }
-        return !_data.empty();
-    }
-    vector<_byte> &GetData() { return _data; }
-    bool write(string &output)
-    {
-        std::ofstream outfile(output, std::fstream::out | std::fstream::trunc | std::fstream::binary);
-        if (!outfile.is_open()) { cout << "Unable to open file for writing"; return false; };
-        for (int i = 0; i < _data.size(); i++)
-        {
-            outfile.put((_byte)_data.at(i));
-        }
-        outfile.close();
-        return true;
-    }
-};
 class cipher {
 public:
     cipher()

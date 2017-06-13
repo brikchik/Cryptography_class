@@ -158,10 +158,7 @@
     <ClCompile Include="des.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <Library Include="..\libs\libcrypto32MT.lib" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="..\Release\input.docx" />
+    <Library Include="..\..\components_of_openssl_lib\libcrypto32MT.lib" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

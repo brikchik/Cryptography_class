@@ -23,13 +23,8 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <Library Include="..\libs\libcrypto32MT.lib">
+    <Library Include="..\..\components_of_openssl_lib\libcrypto32MT.lib">
       <Filter>Файлы ресурсов</Filter>
     </Library>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="..\Release\input.docx">
-      <Filter>Файлы исходного кода</Filter>
-    </None>
   </ItemGroup>
 </Project>
