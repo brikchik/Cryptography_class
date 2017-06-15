@@ -116,6 +116,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -143,9 +144,13 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="7_2_md5.cpp" />
+    <ClCompile Include="md5.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <Library Include="..\..\components_of_openssl_lib\libcrypto32MT.lib" />
+    <ClInclude Include="md5.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <Library Include="..\..\components_of_openssl_lib\libcrypto_32MT.lib" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

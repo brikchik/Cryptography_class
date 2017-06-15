@@ -143,6 +143,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Hash.cpp" />
+    <ClCompile Include="rh.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="rh.h" />

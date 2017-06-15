@@ -18,9 +18,17 @@
     <ClCompile Include="7_2_md5.cpp">
       <Filter>Файлы исходного кода</Filter>
     </ClCompile>
+    <ClCompile Include="md5.cpp">
+      <Filter>Файлы исходного кода</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <Library Include="..\..\components_of_openssl_lib\libcrypto32MT.lib">
+    <ClInclude Include="md5.h">
+      <Filter>Файлы исходного кода</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Library Include="..\..\components_of_openssl_lib\libcrypto_32MT.lib">
       <Filter>Файлы ресурсов</Filter>
     </Library>
   </ItemGroup>
