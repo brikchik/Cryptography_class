@@ -10,7 +10,7 @@ int main()
     std::cout << "Output file name: \n";
     std::cin >> output;
     md5class instance;
-    std::vector<unsigned char> hash = instance.Hash(file.GetData());
+    std::vector<unsigned char> hash = instance.Hash(file.GetData(),32,32);
     Foper outfile;
     outfile.GetData() = hash;
     outfile.write(output);
