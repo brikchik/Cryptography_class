@@ -1,6 +1,6 @@
 #include "md5.h"
-int blockLength=120;
 std::vector<unsigned char> md5class::Hash(std::vector<unsigned char> file, int _length,int _outputSize) {
+    int blockLength = 120;
 	    blockLength=_length;
         std::vector<unsigned char> result;
         int size = file.size();

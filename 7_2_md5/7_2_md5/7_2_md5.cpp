@@ -3,7 +3,7 @@ int main()
 {
     Foper file;
     string input;
-    std::cout << "MD5 hash function. Input source file name to count hash\n";
+    std::cout << "MD5 hash function. Input source file name to count its hash\n";
     std::cin >> input;
     if (!file.open(input))return 1;
     string output;

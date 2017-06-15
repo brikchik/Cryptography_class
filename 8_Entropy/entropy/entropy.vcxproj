@@ -145,6 +145,8 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\7_2_md5\7_2_md5\md5.cpp" />
+    <ClCompile Include="..\..\7_RH_Hash\7_Hash\rh.cpp" />
     <ClCompile Include="entropy.cpp" />
     <ClCompile Include="EntropyCounter.cpp" />
   </ItemGroup>
