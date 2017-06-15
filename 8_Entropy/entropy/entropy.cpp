@@ -1,6 +1,7 @@
 #include "imports.h"
 Foper file;
 Foper outfile;
+
 int main()
 {
     EntropyCounter ec;
@@ -39,6 +40,7 @@ int main()
     ec.count("hafile.txt", 2);
     ec.count("hafile.txt", 4);
     ec.count("hafile.txt", 8);
+
     system("pause");
     return 0;
 }
