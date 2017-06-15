@@ -1,9 +1,32 @@
 #include "imports.h"
 #include "EntropyCounter.h"
-int EntropyCounter::countIntersect(char* filename, int blockSize) 
+int EntropyCounter::countIntersect(char* filename, int blockSize)
 {
+    FILE *inputfile;
+    fopen_s(&inputfile, filename, "rb");
+    if (!inputfile)return 1;
+    fseek(inputfile, 0, SEEK_END);
+    int size = ftell(inputfile);
+    double pi = 0;
+    double P = 0;
+    std::map<char, int> mapX;
+    char* x=new char[1];
+        for (int i = 0; i < size-1; i += blockSize)
+        {
+            fseek(inputfile, i, SEEK_SET);
+            fread(x, sizeof(char), 1, inputfile);
+            if (mapX.find(x[0]) == mapX.end()) mapX.insert(std::pair<char, int>(x[0], 1));
+            else
+                mapX.at(x[0])++;
+        }
+        for (auto it = mapX.begin(); it != mapX.end(); ++it)
+        {
+            pi = 1.0*it->second / size * blockSize;
+            P -= log(pi) / log(blockSize*8.0)*pi;
+        }
+        std::cout << "Block=" << blockSize << "byte: " << P << "\n";
+    }
 
-}
 int EntropyCounter::count(char* filename, int blockSize) {
     FILE *inputfile;
     fopen_s(&inputfile, filename, "rb");
@@ -89,6 +112,3 @@ int EntropyCounter::count(char* filename, int blockSize) {
 
     return 0;
 }
-
-
-//                    for (int i = 0; i <= size / blockSize; i++)std::cout << (int)z[i] << ' ';

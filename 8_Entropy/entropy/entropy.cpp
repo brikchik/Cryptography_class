@@ -40,7 +40,16 @@ int main()
     ec.count("hafile.txt", 2);
     ec.count("hafile.txt", 4);
     ec.count("hafile.txt", 8);
-
+    std::cout << "plaintext (2byte) with intersection:\n";
+    ec.countIntersect("Hfile.txt", 2);
+    Foper outFile; outfile.write((string)"Zfile.txt");
+    /*char* name = "Zfile.txt";
+    HZIP zip=CreateZip((TCHAR*)name,NULL);
+    ZipAdd(zip, (TCHAR*)"packedFile" , (TCHAR*)"file.txt");
+    CloseZip(zip);
+    Foper zipFile; zipFile.open((string)name);
+    double difference = 1.0*zipFile.GetData().size()/file.GetData().size()*100;
+    std::cout << "Archiving gives a file which is " << difference <<" from file.txt\n";*/
     system("pause");
     return 0;
 }

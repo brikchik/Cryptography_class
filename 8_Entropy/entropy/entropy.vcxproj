@@ -35,7 +35,6 @@
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <PlatformToolset>v140</PlatformToolset>
-    <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
@@ -151,10 +150,12 @@
     <ClCompile Include="..\..\7_RH_Hash\7_Hash\rh.cpp" />
     <ClCompile Include="entropy.cpp" />
     <ClCompile Include="EntropyCounter.cpp" />
+    <ClCompile Include="zip.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="EntropyCounter.h" />
     <ClInclude Include="imports.h" />
+    <ClInclude Include="zip.h" />
   </ItemGroup>
   <ItemGroup>
     <Library Include="..\..\components_of_openssl_lib\libcrypto_32MT.lib" />
