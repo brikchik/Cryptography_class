@@ -1,5 +1,9 @@
 #include "imports.h"
 #include "EntropyCounter.h"
+int EntropyCounter::countIntersect(char* filename, int blockSize) 
+{
+
+}
 int EntropyCounter::count(char* filename, int blockSize) {
     FILE *inputfile;
     fopen_s(&inputfile, filename, "rb");
