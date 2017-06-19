@@ -21,9 +21,12 @@
     <ClCompile Include="des.cpp">
       <Filter>Файлы исходного кода</Filter>
     </ClCompile>
+    <ClCompile Include="3_DES.cpp">
+      <Filter>Файлы исходного кода</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <Library Include="..\..\components_of_openssl_lib\libcrypto32MT.lib">
+    <Library Include="..\..\components_of_openssl_lib\libcrypto_32MT.lib">
       <Filter>Файлы ресурсов</Filter>
     </Library>
   </ItemGroup>

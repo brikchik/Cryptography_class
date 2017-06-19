@@ -146,9 +146,10 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Meet_In_The_Middle_ex.cpp" />
+    <ClCompile Include="util.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <Library Include="..\..\components_of_openssl_lib\libcrypto32MT.lib" />
+    <Library Include="..\..\components_of_openssl_lib\libcrypto_32MT.lib" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

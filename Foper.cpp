@@ -24,6 +24,7 @@ public:
         int size = _file.tellg();
         _file.seekg(0, std::ios::beg);
 
+	_data.clear();
         if (size != 0) {
             _byte byte;
             for (int i = 0; i < size; i++)

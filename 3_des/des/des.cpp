@@ -4,57 +4,10 @@
 #include <vector>
 #include <fstream>
 #include <string>
-//#include <openssl/rand.h>
+#include "../../Foper.cpp"
 #include <Windows.h>
 #define cout std::cout
 #define cin std::cin
-class Foper
-{
-private:
-    std::vector<unsigned char> _data;
-public:
-    Foper()
-    {
-    }
-    bool open(std::string &name)
-    {
-        std::ifstream _file(name, std::ios::in | std::ios::binary);
-        if (!_file.is_open())
-        {
-            cout << "No such file: " << name << std::endl;
-            return false;
-        }
-        _file.seekg(0, std::ios::end);
-        int size = _file.tellg();
-        _file.seekg(0, std::ios::beg);
-        if (size != 0) {
-            unsigned char byte;
-            for (int i = 0; i < size; i++)
-            {
-                byte = (unsigned char)(_file.get());
-                _data.push_back(byte);
-            }
-        }
-        else
-        {
-            cout << "Empty file";
-            _file.close();
-        }
-        return !_data.empty();
-    }
-    std::vector<unsigned char> &GetData() { return _data; }
-    bool write(std::string &output)
-    {
-        std::ofstream outfile(output, std::fstream::out | std::fstream::trunc | std::fstream::binary);
-        if (!outfile.is_open()) { cout << "Unable to open file for writing"; return false; };
-        for (int i = 0; i < _data.size(); i++)
-        {
-            outfile.put((unsigned char)_data.at(i));
-        }
-        outfile.close();
-        return true;
-    }
-};
 class des_class {
 private:
     unsigned char input[8], output[8];
@@ -67,11 +20,16 @@ private:
     std::vector<unsigned char> text;
     std::vector<unsigned char> _EncData;
     std::vector<unsigned char> _DecData;
+    DES_key_schedule* getKeySchedule() { return &keyschedule; }
 public:
     des_class() {}
-    bool set_key(unsigned char *new_key)
+    bool set_key(unsigned char* new_key)
     {
-        if (strlen((char*)new_key + '\0') != 9)return false;
+        unsigned char temp[8];
+        for(int i=0;i<8;i++)temp[i] = new_key[i];
+        DES_cblock* dcb = &temp;
+        DES_set_key(dcb, getKeySchedule());
+        //if (strlen((char*)new_key + '\0') != 9)return false;
         DES_set_key((DES_cblock *)new_key, &keyschedule);
         return true;
     }
@@ -99,11 +57,57 @@ public:
         DES_random_key(&key);
         Foper keyFile;
         for (int i = 0; i < 8; i++)keyFile.GetData().push_back(key[i]);
-        keyFile.write(std::string("key.txt"));
+        keyFile.write(string("key.txt"));
         set_key(key);
         cout <<'[ '<< key+'\0'<<' ]';
     }
-    bool ecb_encode(std::string path, std::string dest) {
+    void vector_ecb_encode(std::vector<unsigned char> data, std::vector<unsigned char> &result) {
+        result.clear();
+        paddingNumber = 0; //PKCS#7 padding
+        while (((data.size() + paddingNumber) % 8) != 0)
+        {
+            paddingNumber++;
+        }
+        for (int i = 0; i < paddingNumber; i++)
+        {
+            data.push_back(paddingNumber);
+        }
+        int length = data.size() - 1;
+        int pos = 0;
+        for (int i = 0; i < length; i += 8) {
+            for (int j = 0; j < 8; j++) {
+                input[j] = data[i + j];
+            }
+            DES_ecb_encrypt((DES_cblock *)input, (DES_cblock *)output, &keyschedule, DES_ENCRYPT);
+            for (int j = 0; j < 8; j++) {
+                result.push_back(output[j]);
+                pos++;
+            }
+        }
+        data.clear();
+    }
+    void vector_ecb_decode(std::vector<unsigned char> data, std::vector<unsigned char> &result) {
+        result.clear();
+        int length = data.size() - 1;
+        int pos = 0;
+        for (int i = 0; i < length; i += 8) {
+            for (int j = 0; j < 8; j++) {
+                input[j] = data[i + j];
+            }
+            DES_ecb_encrypt((DES_cblock *)input, (DES_cblock *)output, &keyschedule, DES_DECRYPT);
+            for (int j = 0; j < 8; j++) {
+                result.push_back(output[j]);
+                pos++;
+            }
+        }
+        paddingNumber = result.back();//PKCS#7 padding
+        if (paddingNumber < length) { //for very small (X<16b) messages
+            if (result.at(result.size() - paddingNumber) == paddingNumber)
+                result._Pop_back_n(paddingNumber);
+        }
+        data.clear();
+    }
+    bool ecb_encode(string path, string dest) {
         if (!inputfile.open(path))return false;
         text = inputfile.GetData();
         if (text.empty())return false;
@@ -134,7 +138,7 @@ public:
         text.clear();
         return true;
     }
-    bool ecb_decode(std::string path, std::string dest) {
+    bool ecb_decode(string path, string dest) {
         if (!inputfile.open(path))return false;
         text = inputfile.GetData();
         if (text.empty())return false;
@@ -213,12 +217,12 @@ public:
             }
         }
     }
-    void EncryptECB(std::string path, std::string dest_path, const char *key)
+    void EncryptECB(string path, string dest_path, const char *key)
     {
         inputfile.open(path);
         text = inputfile.GetData();
-        //DES_string_to_key(key, &_key);
-        //DES_set_key_checked(&_key, &keyschedule);
+        DES_string_to_key(key, &_key);
+        DES_set_key_checked(&_key, &keyschedule);
         encrypt_ecb(text, DES_ENCRYPT, Des);
         destfile.GetData() = _EncData;
         _EncData.clear();
@@ -227,12 +231,12 @@ public:
         cout << _EncData.size()<<" ";
         cout << _DecData.size()<<" ";
     }
-    void DecryptECB(std::string path, std::string dest_path, const char *key)
+    void DecryptECB(string path, string dest_path, const char *key)
     {
         inputfile.open(path);
         text = inputfile.GetData();
-        //DES_string_to_key(key, &_key);
-        //DES_set_key_checked(&_key, &keyschedule);
+        DES_string_to_key(key, &_key);
+        DES_set_key_checked(&_key, &keyschedule);
         encrypt_ecb(text, DES_DECRYPT, Des);
         destfile.GetData() = _DecData;
         destfile.write(dest_path);
@@ -241,7 +245,7 @@ public:
         cout << _EncData.size() << " ";
         cout << _DecData.size() << " ";
     }
-    void EncryptCBC(std::string path, std::string dest_path, const char *key)
+    void EncryptCBC(string path, string dest_path, const char *key)
     {
         inputfile.open(path);
         text = inputfile.GetData();
@@ -251,7 +255,7 @@ public:
         _EncData.clear();
         _DecData.clear();
     }
-    void DecryptCBC(std::string path, std::string dest_path, const char *key)
+    void DecryptCBC(string path, string dest_path, const char *key)
     {
         inputfile.open(path);
         text = inputfile.GetData();
@@ -380,7 +384,7 @@ public:
         delete Input;
         delete Output;
     }
-    bool cbc_encode(std::string path, std::string dest) {
+    bool cbc_encode(string path, string dest) {
         if (!inputfile.open(path))return false;
         text = inputfile.GetData();
         if (text.empty())return false;
@@ -414,7 +418,7 @@ public:
         if (!destfile.write(dest))return false;
         return true;
     }
-    bool cbc_decode(std::string path, std::string dest) {
+    bool cbc_decode(string path, string dest) {
         if (!inputfile.open(path))return false;
         text = inputfile.GetData();
         if (text.empty())return false;
@@ -444,7 +448,7 @@ public:
         if (!destfile.write(dest))return false;
         return true;
     }
-    bool des3_ecb_encode(std::string path, std::string dest) {
+    bool des3_ecb_encode(string path, string dest) {
         if (!inputfile.open(path))return false;
         text = inputfile.GetData();
         if (text.empty())return false;
@@ -475,7 +479,7 @@ public:
         text.clear();
         return true;
     }
-    bool des3_ecb_decode(std::string path, std::string dest) {
+    bool des3_ecb_decode(string path, string dest) {
         if (!inputfile.open(path))return false;
         text = inputfile.GetData();
         if (text.empty())return false;
@@ -503,69 +507,3 @@ public:
         return true;
     }
 };
-
-int main()
-{
-    des_class des;
-    //des.gen_key3();
-    //des.cbc_encode("input.docx","out");
-    //des.cbc_decode("out", "result.docx");
-    /*des.gen_key();
-    des.EncryptCBC("input.txt", "result.txt", "helloew");
-    des.DecryptCBC("result.txt", "output.docx", "helloew");*/
-    /*unsigned char* val = (unsigned char*)"helloworld";
-    std::vector<unsigned char> Data;
-    for (int i = 0; i < des._EncData.size(); i++)Data.push_back(val[i]);
-    des.EncryptCBC(Data, "helloke");
-    for (int i = 0; i < Data.size(); i++)cout << Data.at(i);
-    cout << std::endl;
-    for (int i = 0; i < des._EncData.size(); i++)cout << des._EncData.at(i);*/
-    system("cls");
-    cout << "Input command (gen_key/set_key/create_key/ecb_enc/ecb_dec): " << std::endl;
-    std::string mode = "";
-    cin >> mode;
-    cout << "Mode: " << mode << std::endl;
-    if (mode == "set_key")
-    {
-        char key_arr[32];
-        cin >> key_arr;
-        if (!des.set_key((unsigned char*)key_arr))return -2;
-        cout << "Key set.\nInput mode: ";
-        cin >> mode;
-        cout << "Mode: " << mode << std::endl;
-    }
-    else
-        if (mode == "gen_key" || mode=="create_key")
-        {
-            des.gen_key();
-            if (mode == "create_key")des.create_key();
-            cout << "Key set.\nInput mode: ";
-            cin >> mode;
-            cout << "Mode: " << mode << std::endl;
-        }
-    std::string source = "";
-    cout << "Source: ";
-    cin >> source;
-    cout << std::endl;
-    std::string dest = "";
-    cout << "Destination: ";
-    cin >> dest;
-    cout << std::endl;
-    if (mode == "ecb_enc") {
-        des.ecb_encode(source, dest);
-    }
-    else
-    if (mode == "ecb_dec") {
-        des.ecb_decode(source, dest);
-    }
-    else
-    if (mode == "cbc_enc") {
-        //des.cbc_encode(source, dest);
-    }
-    else
-    if (mode == "ecb_dec") {
-        //des.ecb_decode(source, dest);
-    }
-    system("pause");
-    return 0;
-}
