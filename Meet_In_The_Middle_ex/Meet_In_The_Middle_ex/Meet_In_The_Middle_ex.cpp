@@ -65,7 +65,7 @@ void doBuild()
             utils._undes(deskey.key2);
             byte* importantval;
             for(int i=0;i<utils._result.size();i++)importantval[i] = utils._result.at(i);
-            table2.emplace(std::make_pair(j, importantval));
+            //table2.emplace(std::make_pair(j, importantval));
             cout << utils._result.data();
             
             if (compare(utils._importantval, importantval))cout << "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!";
