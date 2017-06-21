@@ -8,8 +8,11 @@
 *.sln.docstates
 *.txt
 *.docx
-crypted.docx
-Decrypted.docx
+*.png
+
+!file.txt
+!test.docx
+!info.txt
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs
 
