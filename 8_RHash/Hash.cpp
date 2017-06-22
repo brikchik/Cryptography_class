@@ -10,9 +10,9 @@ int main()
     std::cout << "Output file name: \n";
     std::cin >> output;
     rh rhclass;
-    std::vector<byte> hash = rhclass.Hash(file.GetData());
     Foper outfile;
-    outfile.GetData() = hash;
+    for(int i=0;i<rhclass.Hash(file.GetData()).size();i++)
+        outfile.GetData().push_back(rhclass.Hash(file.GetData()).at(i));
     outfile.write(output);
     std::cout << "demonstration finished\n";
     system("pause");

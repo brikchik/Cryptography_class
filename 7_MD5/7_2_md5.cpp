@@ -10,9 +10,9 @@ int main()
     std::cout << "Output file name: \n";
     std::cin >> output;
     md5class instance;
-    std::vector<unsigned char> hash = instance.Hash(file.GetData(),file.GetData().size(),64);
     Foper outfile;
-    outfile.GetData() = hash;
+    for (int i = 0; i<instance.Hash(file.GetData(),120,12).size(); i++)
+        outfile.GetData().push_back(instance.Hash(file.GetData(),120,12).at(i));
     outfile.write(output);
     std::cout << "demonstration finished\n";
     system("pause");

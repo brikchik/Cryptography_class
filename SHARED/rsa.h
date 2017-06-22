@@ -46,7 +46,7 @@ public:
     int Encrypt(string sourceFile, string destFile, char* key)
     {
         RSA* rsa = createRSAFromFile(key, 1);
-        if (!rsa)return -1;
+        if (!rsa) { std::cout << "key not found"; system("pause"); return -1; }
         Foper inputFile;
         if (!inputFile.open(sourceFile))return -1;
         int blockSize = RSA_size(rsa) - 11;
@@ -75,6 +75,7 @@ public:
     int Decrypt(string sourceFile, string destFile, char* key)
     {
         RSA* rsa = createRSAFromFile(key, 0);
+        if (!rsa) { std::cout << "key not found"; system("pause"); return -1; }
         Foper inputFile;
         if (!inputFile.open(sourceFile))return -1;
         int blockSize = RSA_size(rsa);

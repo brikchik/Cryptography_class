@@ -8,8 +8,9 @@
 class EntropyCounter
 {
 public:
-    int EntropyCounter::countIntersect(char* filename, int blockSize)
+    int EntropyCounter::countIntersect(char* filename)
     {
+        int blockSize = 1;
         FILE *inputfile;
         fopen_s(&inputfile, filename, "rb");
         if (!inputfile)return 1;
@@ -19,7 +20,7 @@ public:
         double P = 0;
         std::map<char, int> mapX;
         char* x = new char[1];
-        for (int i = 0; i < size - 1; i += blockSize)
+        for (int i = 0; i < size - i; i += blockSize)
         {
             fseek(inputfile, i, SEEK_SET);
             fread(x, sizeof(char), 1, inputfile);
@@ -32,7 +33,7 @@ public:
             pi = 1.0*it->second / size * blockSize;
             P -= log(pi) / log(blockSize*8.0)*pi;
         }
-        std::cout << "Block=" << blockSize << "byte: " << P << "\n";
+        std::cout << "Block=" << 2 << "byte: " << P << "\n";
     }
     int EntropyCounter::count(char* filename, int blockSize) {
         FILE *inputfile;
@@ -55,7 +56,7 @@ public:
             }
             for (auto it = mapX.begin(); it != mapX.end(); ++it)
             {
-                pi = 1.0*it->second / size * blockSize;
+                pi = 1.0*it->first / size * blockSize;
                 P -= log(pi) / log(blockSize*8.0)*pi;
             }
             std::cout << "Block=" << blockSize << "byte: " << P << "\n";

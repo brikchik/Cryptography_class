@@ -6,7 +6,7 @@ private:
     int blockLength = 120;
     int outputSize = 12;
 public:
-    std::vector<unsigned char> rh::funcIt(std::vector<unsigned char> &iv, std::vector<unsigned char> &block)//transforms blockLength bytes into blockLength/10 bytes 
+    std::vector<unsigned char> rh::funcIt(std::vector<unsigned char> iv, std::vector<unsigned char> &block) 
     {
         std::vector<unsigned char> res;
         for (int i = 0; i < outputSize - 1; i++)
@@ -18,7 +18,7 @@ public:
         }
         unsigned char symbol = block.at(outputSize - 1);
         symbol ^= iv.back();
-        res.push_back(symbol);//last symbol
+        res.push_back(symbol);
         return res;
     }
     std::vector<unsigned char> rh::Hash(std::vector<unsigned char> &file) {
@@ -37,7 +37,7 @@ public:
             }
             iv = funcIt(iv, block);
             block.clear();
-            for (int i = 0; (i < outputSize) && (i < size / blockLength); i++)
+            for (int i = 0; (i < outputSize) && (i < size); i++)
             {
                 result.push_back(iv.at(i));
             }

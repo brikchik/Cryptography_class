@@ -4,7 +4,7 @@
 #pragma comment (lib,"../third-party/lib/Libcrypto_32MT.lib")
 class md5class {
 public:
-    std::vector<byte> const md5class::Hash(std::vector<byte> file, int _length, int _outputSize) {
+    std::vector<byte> md5class::Hash(std::vector<byte> file, int _length, int _outputSize) {
         int blockLength = 120;
         blockLength = _length;
         std::vector<byte> result;
