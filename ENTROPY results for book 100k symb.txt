@@ -1,0 +1,34 @@
+source file name: 100kSymb.docx
+plaintext entropy:
+Block=1byte: 2.65325
+Block=2byte: 1.98947
+Block=4byte: 0.780328
+Block=8byte: 0.307345
+plaintext (2byte) with intersection:
+Block=2byte: 1.98666
+Encrypting file...
+ciphertext (rsa, random public key):
+Block=1byte: 2.6662
+Block=2byte: 1.99919
+Block=4byte: 0.798311
+Block=8byte: 0.31395
+ciphertext (rsa, random public key) (2byte) with intersection:
+Block=2byte: 1.99923
+hash file (md5):
+Block=1byte: 2.20003
+Block=2byte: 1.59773
+Block=4byte: 0.50139
+Block=8byte: 0.311092
+hash file (md5) (2byte) with intersection:
+Block=2byte: 1.64978
+hash file (RH hash function):
+Block=1byte: 2.66589
+Block=2byte: 1.99831
+Block=4byte: 0.79501
+Block=8byte: 0.312671
+hash file (RHash) (2byte) with intersection:
+Block=2byte: 1.99888
+plaintext zip ratio: 1.02429
+rsa_text zip ratio: 0.998595
+md5_text zip ratio: 1.83689
+rhash_text zip ratio: 0.998529

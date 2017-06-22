@@ -79,6 +79,9 @@ int main()
             std::cout << "rsa_text zip ratio: " << Zip("rsa.zip", "Cfile.txt") << '\n';
             std::cout << "md5_text zip ratio: " << Zip("md5.zip", "MD5file.txt") << '\n';
             std::cout << "rhash_text zip ratio: " << Zip("rhash.zip", "hafile.txt") << '\n';
+            std::cout << std::endl;
+            system("pause");
+            system("cls");
         }
         else
             if (choice == 2)

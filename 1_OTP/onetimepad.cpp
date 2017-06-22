@@ -13,6 +13,15 @@ public:
     cipher()
     {
     }
+    void full_Size(int size, string &output)
+    {
+        Foper _outfile;
+        for (int i = 0; i < size; i++)
+        {
+            _outfile.GetData().push_back(rand() % 256);
+        }
+        _outfile.write(output);
+    }
     bool full(string &source, string &output)
     {
         Foper _file;
