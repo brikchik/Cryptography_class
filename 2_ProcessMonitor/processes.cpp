@@ -15,11 +15,8 @@ std::map<DWORD, std::string> GetProcList()
     PROCESSENTRY32 procEntry;
     procEntry.dwSize = sizeof(PROCESSENTRY32);
     Process32First(procsnap, &procEntry);
-    char name[1024];
-    wcstombs(name, (wchar_t*)procEntry.szExeFile, sizeof(procEntry.szExeFile));
     processes_map.insert(std::make_pair(procEntry.th32ProcessID, procEntry.szExeFile));
     while (Process32Next(procsnap, &procEntry)) {
-        wcstombs(name, (wchar_t*)procEntry.szExeFile, sizeof(procEntry.szExeFile));
         processes_map.insert(std::make_pair(procEntry.th32ProcessID, procEntry.szExeFile));
     }
     CloseHandle(procsnap);
