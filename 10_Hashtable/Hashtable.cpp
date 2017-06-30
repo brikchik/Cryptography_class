@@ -4,194 +4,131 @@
 #include "../shared/rh.h"
 #include "../shared/md5.h"
 #include <vector>
-//class HashEntry {
-//private:
-//    unsigned char* key=NULL;
-//    char* value=NULL;
-//public:
-//    HashEntry(unsigned char* key, char* value) {
-//        this->key = key;
-//        this->value = value;
-//    }
-//    HashEntry() {
-//        key = NULL;
-//        value = NULL;
-//    }
-//    unsigned char* getKey() {
-//        return key;
-//    }
-//    char* getValue() {
-//        return value;
-//    }
-//};
-//const int TABLE_SIZE = 128;
-//const int ROW_SIZE = 128;
-//class HashContent
-//{
-//private:
-//    unsigned char* hashedKey;
-//    HashEntry *row;
-//    int count = 0;
-//    unsigned char* hash(unsigned char* key) { return (unsigned char*)strlen((char*)key); }
-//public:
-//    HashContent(unsigned char* hKey)
-//    {
-//        this->hashedKey = hash(hKey);
-//    }
-//    HashContent() {
-//        row = new HashEntry[ROW_SIZE];
-//    }
-//    int Count() { return count; }
-//    char* get(unsigned char* key) {
-//        int foundIndex = -1;
-//        for (int i = 0; i < count; i++)
-//            if (row[i].getKey() == key)foundIndex = i;
-//        if (foundIndex != -1)return row[foundIndex].getValue();
-//        else return NULL;
-//    }
-//    void put(unsigned char* key, char* value) {
-//        row = new HashEntry();
-//        bool found = false;
-//        for (int i = 0; i < count; i++)
-//            if (row[i].getKey() == key)found = true;//проверка на наличие этого файла
-//        if (!found)
-//        {
-//            row[count] = HashEntry(key, value);
-//            count++;
-//            this->hashedKey = hash(key);
-//        }
-//    }
-//    unsigned char* getHashedKey() { return hashedKey; }
-//};
-//class HashMap {
-//private:
-//    HashContent *HashContents;
-//    int count=0;
-//    unsigned char* hash(unsigned char* key) { return (unsigned char*)strlen((char*)key); }
-//public:
-//    HashMap() {
-//        HashContents = new HashContent[TABLE_SIZE];
-//    }
-//    void put(unsigned char* key, char* value)
-//    {
-//        bool success = false;
-//        if (HashContents[0].Count() == 0)HashContents[0] = HashContent();
-//        for (int i = 0; i < count; i++)
-//            if (HashContents[i].getHashedKey() == hash(key))HashContents[i].put(key, value);
-//        if (!success)
-//        {
-//            HashContents[count] = HashContent(key);
-//            HashContents[count].put(key, value);
-//            count++;
-//        }
-//    }
-//    char* get(unsigned char* key)
-//    {
-//        for (int i = 0; i < count; i++)
-//        {
-//            if (HashContents[i].getHashedKey() == hash(key))
-//                return HashContents[i].get(key);
-//        }
-//        return "";
-//    }
-//};
-
-
-
-
-
+#include <locale>
+#include <fstream>
+#pragma comment(linker, "/STACK:65536")
 //http://www.algolist.net/Data_structures/Hash_table/Chaining
+//http://www.firststeps.ru/mfc/winapi/r.php?158
 class filePar
 {
 public:
-    char* name;
-    int attr;
+    string name="";
+    std::vector<string> attrib;
+    filePar() {}
+    filePar(string a, std::vector<string> attributes) 
+    {
+        name = a;
+        attrib = attributes;
+    }
 };
 class LinkedHashEntry {
 private:
-    char* key;
-    filePar value;
-    LinkedHashEntry *next;
+    string key;
+    filePar value=filePar();
+    LinkedHashEntry *next=NULL;
 public:
-    LinkedHashEntry(char* key, filePar value) {
+    LinkedHashEntry(string key, filePar value) {
         this->key = key;
         this->value = value;
         this->next = NULL;
     }
-
-    char* getKey() {
+    string &getKey() {
         return key;
     }
-
-    filePar getValue() {
+    filePar &getValue() {
         return value;
     }
-
     void setValue(filePar value) {
         this->value = value;
     }
-
     LinkedHashEntry *getNext() {
         return next;
     }
-
     void setNext(LinkedHashEntry *next) {
         this->next = next;
     }
 };
-
-const int TABLE_SIZE = 1280;
-
+const int TABLE_SIZE = 256;
+int maxAlpha = 3;
 class HashMap {
 private:
-    rh rhclass;
-    int Hash(char* key) { 
+    md5class hash1;
+    rh hash0;
+    int hashType = 1;//md5
+    int Hash(string key) { 
         int result = 0;
         std::vector<unsigned char> temp;
         std::vector<unsigned char> temp2;
-        for (int i = 0; i < strlen(key); i++)temp.push_back(key[i]);
-        temp2 = rhclass.Hash(temp);
-        std::cout << temp2.at(0);///////////////////////////////////////////////key
-        return result % 128; }
+        for (int i = 0; i < key.length(); i++)temp.push_back(key[i]);
+        if (hashType == 1)temp2 = hash1.Hash(temp, temp.size(), 2);
+        else
+            temp2 = hash0.Hash(temp, temp.size(), 2);
+        result += temp2.at(0)<<8;
+        result += temp2.at(1);
+        return result%TABLE_SIZE;
+    }
     LinkedHashEntry **table;
+    int alpha = 0;
 public:
     HashMap() {
         table = new LinkedHashEntry*[TABLE_SIZE];
         for (int i = 0; i < TABLE_SIZE; i++)
             table[i] = NULL;
     }
-    filePar get(char* key) {
+    filePar get(string key) {
         int hash = Hash(key);
-        std::cout << '_' << hash << '_';
         if (table[hash] == NULL)
-            return filePar();// emptyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy
+            return filePar();
         else {
             LinkedHashEntry *entry = table[hash];
             while (entry != NULL && entry->getKey() != key)
                 entry = entry->getNext();
             if (entry == NULL)
-                return filePar();// emptyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy
+                return filePar();
             else
                 return entry->getValue();
         }
     }
-
-    void put(char* key, filePar value) {
-
+    int getAlpha() { return alpha; }
+    void rebuild(int hash)
+    {
+        std::cout << "rebuilding";
+        hashType = hash;
+        for (int i = 0; i < TABLE_SIZE; i++)
+        {
+            LinkedHashEntry* newTable[TABLE_SIZE];
+            string tempname = table[i]->getKey();
+            //newTable[Hash(tempname)]=table[i];
+            
+        }
+    }
+    void put(string key, filePar value) {
         int hash = Hash(key);
+        int number = 0;
         if (table[hash] == NULL)
+        {
+            number++;
             table[hash] = new LinkedHashEntry(key, value);
+        }
         else {
             LinkedHashEntry *entry = table[hash];
             while (entry->getNext() != NULL)
+            {
                 entry = entry->getNext();
+                number++;
+            }
             if (entry->getKey() == key)
                 entry->setValue(value);
             else
+            {
                 entry->setNext(new LinkedHashEntry(key, value));
+                number++;
+            }
         }
+        if (number > alpha)alpha++;
+        if (alpha > maxAlpha)rebuild(0);
     }
-    void remove(char* key) {
+    void remove(string key) {
         int hash = Hash(key);
         if (table[hash] != NULL) {
             LinkedHashEntry *prevEntry = NULL;
@@ -214,6 +151,32 @@ public:
             }
         }
     }
+    void printMap(string path="") 
+    {
+        bool toFile = false;
+        std::ofstream outfile;
+        if (path != "")
+        {
+            outfile.open(path.c_str());
+            toFile = true;
+        }
+        for (int i = 0; i < TABLE_SIZE; i++)
+        {
+            if (table[i] != NULL)
+            {
+                LinkedHashEntry *entry = table[i];
+                if(toFile)outfile << i << ": "; else std::cout << i << ": ";
+                while (entry != NULL)
+                {
+                    if (toFile)outfile << entry->getValue().name << ' '; else std::cout << entry->getValue().name << ' ';
+                    entry = entry->getNext();
+                }
+                if (toFile)outfile << '\n'; else std::cout << '\n';
+                delete entry;
+            }
+        }
+        if (toFile)outfile.close();
+    }
     ~HashMap() {
         for (int i = 0; i < TABLE_SIZE; i++)
             if (table[i] != NULL) {
@@ -229,23 +192,32 @@ public:
     }
 };
 
-
+HashMap hm;
+void addFolder(string &path) 
+{
+    WIN32_FIND_DATA FindFileData;
+    HANDLE hf;
+    hf = FindFirstFile(path.c_str(), &FindFileData);
+    while (FindNextFile(hf, &FindFileData))
+    {
+        string fpath = FindFileData.cFileName;
+        hm.put(path + '/' + fpath , filePar(path+'/'+fpath, std::vector<string>(FindFileData.dwFileAttributes)));
+        if ((FindFileData.dwFileAttributes&FILE_ATTRIBUTE_DIRECTORY) && fpath != "." && fpath != "..")
+        {
+            path.resize(path.size() - 1);
+            addFolder(path + '/' + fpath + "/*");
+        }
+        std::cout << hm.getAlpha();
+    }
+};
 int main()
 {
+    setlocale(LC_ALL, "RUSSIAN");
     std::cin.clear();
-    filePar fp;
-    fp.name = "fp1";
-    fp.attr = 9;
-    filePar fp2;
-    fp2.name = "21";
-    fp2.attr = 29;
-    HashMap hm;
-    
-    hm.put("f1", fp);
-    hm.put("gg", fp2);
-    std::cout << hm.get("f1").name<<'\n';
-    std::cout << hm.get("gg").name;
-    //std::cout<<hm.get(12);
+    string path = "D://hack/*";
+    addFolder(path);
+    try { hm.printMap("res.txt"); }
+    catch (...) { std::cout << "error at printMap()"; };
     system("pause");
     return 0;
 }
