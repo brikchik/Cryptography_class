@@ -53,7 +53,7 @@ bool sendM(char* message, int size)
     else
         return true;
 }
-char* getM(int size)
+char* &getM(int size)
 {
     char* message=new char[size];
     retVal = recv(clientSock, message, size, 0);
@@ -68,6 +68,11 @@ char* getM(int size)
 }
 bool Diffie_hellman()
 {
+    char* Nvalue = "823122826709839759871747";
+    char* Pvalue = "725115387097598744838427";
+    mpz_t N, P;
+    mpz_init_set_str(N, Nvalue, strlen(Nvalue));
+    mpz_init_set_str(P, Pvalue, strlen(Pvalue));
     mpz_t A;
     mpz_init(A);
     gmp_randstate_t r_state;
@@ -77,13 +82,23 @@ bool Diffie_hellman()
     mpz_urandomb(A, r_state, 80);
     gmp_printf("My number: %Zd\n", A);
     gmp_randclear(r_state);
+    mpz_t Atrans;
+    mpz_init(Atrans);
+    mpz_powm(Atrans, P, A, N);// Atrans=P^A%N
+    char key[50];
+    gmp_sprintf(key, "%Zd", Atrans);
+    gmp_printf("P^AmodN: %Zd\n", Atrans);
     mpz_clear(A);
     init();
-    printf("Sending request from client\n");
-    char pBuf[1] = { 'k' };
-    sendM(pBuf, 25);
-    char* szResponse = getM(25);
-    printf("Got the response from server\n%s\n", szResponse);
+    if (sendM(key, 50))gmp_printf("Sent key to target\n"); else return false;
+    char* Btrans = getM(50);
+    if (Btrans == "")return false;
+    gmp_printf("Got the key from target: %s\n", Btrans);
+    mpz_t KEY;
+    mpz_init_set_str(KEY, Btrans, 25);
+    //gmp_printf("%Zd\n", KEY);
+    //mpz_add(KEY, A, KEY);
+    gmp_printf("P^(AB)modN: %Zd\n", KEY);
     finish();
     return true;
 }

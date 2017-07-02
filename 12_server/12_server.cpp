@@ -77,20 +77,38 @@ void finish()
 }
 bool Diffie_hellman()
 {
+    char* Nvalue = "823122826709839759871747";
+    char* Pvalue = "725115387097598744838427";
+    mpz_t N,P;
+    mpz_init_set_str(N, Nvalue, strlen(Nvalue));
+    mpz_init_set_str(P, Pvalue, strlen(Pvalue));
+
     mpz_t B;
     mpz_init(B);
     gmp_randstate_t r_state;
     gmp_randinit_default(r_state);
-    gmp_randseed_ui(r_state, time(NULL));
+    gmp_randseed_ui(r_state, time(NULL)-1);
     mpz_init(B);
     mpz_urandomb(B, r_state, 80);
     gmp_printf("My number: %Zd\n", B);
     gmp_randclear(r_state);
+    mpz_t Btrans;
+    mpz_init(Btrans);
+    mpz_powm(Btrans, P, B,N);// Atrans=P^A%N
+    char key[50];
+    gmp_sprintf(key, "%Zd", Btrans);
+    gmp_printf("P^BmodN: %Zd\n", Btrans);
     mpz_clear(B);
     init();
-    printf("Got the request from client\n%s\n", getM(25));
-    char *szResp = "Response";
-    if (sendM(szResp, 25))printf("Sent response from server\n");
+    char* Atrans = getM(50);
+    if (Atrans == "")return false;
+    gmp_printf("Got the key from target: %s\n", Atrans);
+    if (sendM(key, 50))gmp_printf("Sent key to target\n");
+    mpz_t KEY;
+    mpz_init_set_str(KEY, Atrans, 25);
+    //gmp_printf("%Zd\n",KEY);
+    //mpz_add(KEY, B, KEY);
+    gmp_printf("P^(AB)modN: %Zd\n", KEY);
     finish();
     return true;
 }
