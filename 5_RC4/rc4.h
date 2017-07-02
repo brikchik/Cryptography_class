@@ -1,8 +1,7 @@
-#include "../shared/Foper.cpp"
-#define vector std::vector
+#include "imports.h"
 class rc4 {
 private:
-    const int blockLength = 8; //1byte block
+    const int blockLength = 8;
     int tableSize = 0;
     vector<byte> key;
     vector<byte> table;
@@ -73,12 +72,11 @@ public:
         if (!input.open(inputpath))
         {
             std::cout << "Key file not found";
-            return;
+            exit(3);
         }
         a = 0;
         b = 0;
         table.clear();
-
         ms();
         for (int i = 0; i < input.GetData().size(); i++)
             output.GetData().push_back(input.GetData().at(i) ^ get());

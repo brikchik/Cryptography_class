@@ -119,9 +119,6 @@
     <ClCompile Include="5_RC4.cpp" />
     <ClCompile Include="rc4.cpp" />
   </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="imports.h" />
-  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
