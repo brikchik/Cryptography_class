@@ -14,6 +14,7 @@ public:
             byte symbol = (block.at(i) + block.at(i + 1)) % (128 + i);
             symbol ^= iv.at(i);
             symbol += i;
+            symbol %= 128;
             res.push_back(symbol);
         }
         byte symbol = block.at(outputSize - 1);
