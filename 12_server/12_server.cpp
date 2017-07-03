@@ -50,6 +50,7 @@ void init()
         WSACleanup();
         return;
     }
+    std::cout << "Waiting for connection...\n";
     retVal = listen(servSock, 10);
     if (retVal == SOCKET_ERROR)
     {
@@ -96,6 +97,7 @@ bool Diffie_hellman()
     gmp_sprintf(key, "%Zd", Btrans);
     gmp_printf("P^BmodN: %Zd\n", Btrans);
     mpz_clear(B);
+    init();
     char* Atrans = getM(50);
     if (Atrans == "")return false;
     gmp_printf("Got the key from target: %s\n", Atrans);
@@ -122,7 +124,6 @@ char* rc4get()
 }
 int main(void)
 {
-    init();
     if (!Diffie_hellman())return 1;
     char* result = rc4get();
     std::cout << "Text received(50symbols): "<<result;
