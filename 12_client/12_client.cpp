@@ -99,7 +99,7 @@ bool Diffie_hellman()
     mpz_t KEY; mpz_init(KEY);
     mpz_t Breceived; mpz_init(Breceived);
     mpz_set_str(Breceived, Btrans, 10);
-    mpz_powm(KEY, Breceived, Atrans, N);
+    mpz_powm(KEY, Breceived, A, N);
     gmp_printf("KEY: %Zd\n", KEY);
     for (int i = 0; i < 50; i++)keyArr[i] = 0;
     gmp_sprintf(keyArr, "%Zd",KEY);
