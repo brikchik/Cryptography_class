@@ -31,6 +31,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "12_server", "12_server\12_s
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "13_oftenUsedLib", "13_oftenUsedLib\13_oftenUsedLib.vcxproj", "{8787BAF2-786A-4EAD-BE05-CDA174C6E22E}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "mitm2", "mitm2\mitm2.vcxproj", "{BD7AEB44-F33C-4DA1-91E3-8410AFF2F127}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -152,6 +154,14 @@ Global
 		{8787BAF2-786A-4EAD-BE05-CDA174C6E22E}.Release|x64.Build.0 = Release|x64
 		{8787BAF2-786A-4EAD-BE05-CDA174C6E22E}.Release|x86.ActiveCfg = Release|Win32
 		{8787BAF2-786A-4EAD-BE05-CDA174C6E22E}.Release|x86.Build.0 = Release|Win32
+		{BD7AEB44-F33C-4DA1-91E3-8410AFF2F127}.Debug|x64.ActiveCfg = Debug|x64
+		{BD7AEB44-F33C-4DA1-91E3-8410AFF2F127}.Debug|x64.Build.0 = Debug|x64
+		{BD7AEB44-F33C-4DA1-91E3-8410AFF2F127}.Debug|x86.ActiveCfg = Debug|Win32
+		{BD7AEB44-F33C-4DA1-91E3-8410AFF2F127}.Debug|x86.Build.0 = Debug|Win32
+		{BD7AEB44-F33C-4DA1-91E3-8410AFF2F127}.Release|x64.ActiveCfg = Release|x64
+		{BD7AEB44-F33C-4DA1-91E3-8410AFF2F127}.Release|x64.Build.0 = Release|x64
+		{BD7AEB44-F33C-4DA1-91E3-8410AFF2F127}.Release|x86.ActiveCfg = Release|Win32
+		{BD7AEB44-F33C-4DA1-91E3-8410AFF2F127}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
