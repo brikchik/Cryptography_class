@@ -5,8 +5,11 @@
 #include "../shared/md5.h"
 #include <vector>
 #include <locale>
+#include <string>
 #include <fstream>
 #include <exception>
+#pragma once
+#define string std::string
 #pragma comment(linker, "/STACK:65536")
 const int TABLE_SIZE = 2048; //11bit hash
 //http://www.algolist.net/Data_structures/Hash_table/Chaining

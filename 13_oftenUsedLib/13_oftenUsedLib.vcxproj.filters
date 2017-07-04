@@ -15,22 +15,8 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="des.h">
-      <Filter>Файлы исходного кода</Filter>
+    <ClInclude Include="oftenUsedLib.h">
+      <Filter>Заголовочные файлы</Filter>
     </ClInclude>
-    <ClInclude Include="md5.h">
-      <Filter>Файлы исходного кода</Filter>
-    </ClInclude>
-    <ClInclude Include="rh.h">
-      <Filter>Файлы исходного кода</Filter>
-    </ClInclude>
-    <ClInclude Include="rsa.h">
-      <Filter>Файлы исходного кода</Filter>
-    </ClInclude>
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="foper.cpp">
-      <Filter>Файлы исходного кода</Filter>
-    </ClCompile>
   </ItemGroup>
 </Project>

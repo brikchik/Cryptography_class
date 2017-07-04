@@ -1,5 +1,5 @@
 #pragma once
-#include "../shared/Foper.cpp"
+#include "../shared/foper.h"
 class rh
 {
 private:

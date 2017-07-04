@@ -1,5 +1,5 @@
 #pragma once
-#include "../shared/Foper.cpp"
+#include "../shared/Foper.h"
 #include "../THIRD-PARTY/INCLUDE/openssl/md5.h"
 #pragma comment (lib,"../third-party/lib/Libcrypto_32MT.lib")
 class md5class {

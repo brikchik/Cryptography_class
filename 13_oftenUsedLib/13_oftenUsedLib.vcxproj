@@ -19,13 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="des.h" />
-    <ClInclude Include="md5.h" />
-    <ClInclude Include="rh.h" />
-    <ClInclude Include="rsa.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="foper.cpp" />
+    <ClInclude Include="oftenUsedLib.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{8787BAF2-786A-4EAD-BE05-CDA174C6E22E}</ProjectGuid>
