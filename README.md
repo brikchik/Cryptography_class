@@ -16,3 +16,4 @@ list of small apps connected with cryptography.
 11) MeetInTheMiddle - MITM attack demonstration with 4 threads. I've missed the fact DES keys have to be "checked" in openssl so the attack doesn't work correctly: it finds keys but most of them aren't allowed be used in real projects as they aren't cryptographically strong.
 12) Client-Server - small ciphered socket-based app with diffie-hellman protocol. It often works badly as [#MPIR](https://github.com/wbhart/mpir) - a library with big integer support makes mistakes while working with integers of different length. That's why the app works well OR it's unable to decode messages.
 13) Static library example.
+14) Basic encryption: 2-gram, matrix
