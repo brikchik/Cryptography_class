@@ -1,5 +1,6 @@
 #include <iostream>
-#include <math.h>
+#include <string>
+#include <vector>
 using namespace std;
 int gcd(int a, int b, int & x, int & y) {//recursive evklid algorithm
 	if (a == 0) {
@@ -73,13 +74,51 @@ int* getKey(char* source, int N, bool printMessage=true)//get key from 2 pairs P
 	res[1] = bb;
 	return res;
 }
+void Matrix(string source,bool encode=true)
+{
+	int m1[2][2]={ { 7,7 },{ 6,5 } };//matrix 11
+	int m1D[2][2] = { {3,1},{12,25} };//reversed matrix 11
+	int m2[2];//result of 2gram encoding
+	int N = 2;
+	string res;
+	int length = source.length();
+	if (length % 2 == 1) {
+		cout << "incorrect size, z added\n"; source.push_back('z'); length++;
+	}
+	for (int i = 0;i < length;i++)source.at(i) = tolower(source.at(i));
+	cout << "Text: " << source.c_str() << " -> ";
+	for (int i = 0;i < length;i++)if (source[i] == ' ')source[i] = 'z';
+	vector<int> grams;
+	for (int i = 0;i < length;i++)
+	{
+		grams.push_back((source[i] - 'a')%26);
+	}
+	for (int c = 0;c < length;c += N)
+	{
+		for (int i = 0;i < N;i++)
+		{//rows in 1
+			if (encode)m2[i] = (m1[i][0] * grams.at(c) + m1[i][1] * grams.at(c + 1)) % 26;
+			else m2[i] = (m1D[i][0] * grams.at(c) + m1D[i][1] * grams.at(c + 1)) % 26;
+			if (m2[i] == 'z' - 'a')m2[i] = ' ' - 'a';
+			res.push_back(m2[i]);
+		}
+	}
+	for (int i = 0;i < length;i++)cout << (char)(res.at(i)+'a');
+	cout << endl;
+}
 int main()
 {
-	cout << encode2("i always try to help", 9, 1)<<endl;
-	cout << encode2("csdwqbohxqfjxqesmlag", getKey("aldwheml", 26)[0], getKey("aldwheml", 26,false)[1]) << endl;
-	// some tests
-	cout << encode2("glqibicnhiwbliebkxzhixeqabpn", getKey("soebkzhi", 26)[0], getKey("soebkzhi", 26, false)[1])<<endl;
-	cout << encode2("vwzwyifhpfcpaesszybxih", getKey("atcpouss", 26)[0], getKey("atcpouss", 26, false)[1]) << endl;
+	string source = "Stab attack medical student spared jail";
+	string source2 = "jlhftugbokldio gomsj vffplwfxbphxneneosj";
+	getline(cin, source);
+	Matrix(source);
+	getline(cin, source2);
+	Matrix(source2,false);
+	//cout << encode2("i always try to help", 9, 1)<<endl;
+	//cout << encode2("csdwqbohxqfjxqesmlag", getKey("aldwheml", 26)[0], getKey("aldwheml", 26,false)[1]) << endl;
+	//// some tests
+	//cout << encode2("glqibicnhiwbliebkxzhixeqabpn", getKey("soebkzhi", 26)[0], getKey("soebkzhi", 26, false)[1])<<endl;
+	//cout << encode2("vwzwyifhpfcpaesszybxih", getKey("atcpouss", 26)[0], getKey("atcpouss", 26, false)[1]) << endl;
 	system("pause");
     return 0;
 }
