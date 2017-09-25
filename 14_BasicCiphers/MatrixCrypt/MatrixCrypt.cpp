@@ -37,29 +37,49 @@ char* encode2(char* source, int a, int b)//affine mapping. Encodes text with 2-g
 	for (int i = 0;i < strlen(text)/2;i++)
 	{
 		bigrams[i] = (text[i*2]-'a')*N+(text[i*2+1]-'a')<<' ';		
+	}
+	for (int i = 0;i < strlen(text) / 2;i++)
+	{
 		int res = (bigrams[i] * a + b) % (N*N);
 		int l1 = res / N;
 		int l2 = res % N;
 		l1 = alphabet[l1]; l2 = alphabet[l2];
-		result[i*2] = l1;
-		result[i*2+1]=l2;
+		result[i * 2] = l1;
+		result[i * 2 + 1] = l2;
 	}
 	result[strlen(text)] = '\0';
-
-	//cout << '=' << bigrams[2]-bigrams[0] << '='<< bigrams[3] - bigrams[1];
+	delete[] bigrams;
+	return result;
+}
+int* getKey(char* source, int N, bool printMessage=true)//get key from 2 pairs P->C. Takes 8byte string 'aabbccdd'
+{
+	int bigrams [4];
+	for (int i = 0;i < 4;i++)
+	{
+		bigrams[i] = (source[i * 2] - 'a')*N + (source[i * 2 + 1] - 'a') << ' ';
+	}
 	//trying to find a
 	int t1 = bigrams[3] - bigrams[1];
 	int t2 = bigrams[2] - bigrams[0];
-	delete[] bigrams;
-	return result;
+	int aa = t2*rev(t1, 0, N)[0] % (N*N);
+	if (aa < 0)aa += N*N;
+	//trying to find b
+	int bb = (bigrams[0] - bigrams[1] * aa) % (N*N);
+	if (bb < 0)bb += N*N;
+	if(printMessage)cout << "getting key from " << source[0] << source[1] << "->" << source[2] << source[3] 
+		<< " and " << source[4] << source[5] << "->" << source[6] << source[7] << endl;
+	int res[2];
+	res[0] = aa;
+	res[1] = bb;
+	return res;
 }
 int main()
 {
 	cout << encode2("i always try to help", 9, 1)<<endl;
-	cout << encode2("aldwheml", 0, 0)<<endl;
-	cout << encode2("csdwqbohxqfjxqesmlag", rev(9,1,26)[0], rev(9,1,26)[1]) << endl;
-	//cout << encode2("soebkzhi",1,1);
-	//cout << encode2("glqibicnhiwbliebkxzhixeqabpn", 0, 0)<<endl;
+	cout << encode2("csdwqbohxqfjxqesmlag", getKey("aldwheml", 26)[0], getKey("aldwheml", 26,false)[1]) << endl;
+	// some tests
+	cout << encode2("glqibicnhiwbliebkxzhixeqabpn", getKey("soebkzhi", 26)[0], getKey("soebkzhi", 26, false)[1])<<endl;
+	cout << encode2("vwzwyifhpfcpaesszybxih", getKey("atcpouss", 26)[0], getKey("atcpouss", 26, false)[1]) << endl;
 	system("pause");
     return 0;
 }
